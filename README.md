@@ -1,11 +1,11 @@
 ## What
 A jquery plugin for associating DOM elements with handlebar
-templates in a way that supports the typical use cases.
+templates in a way that supports and simplifies the typical use case.
 
 ## Why
 I recently was exposed to the dojo framework, and while there
 are things that I dislike about it, one of the things that
-I think is a good idea is being able to define a templated
+I think is a good idea is being able to define and reference a templated
 region via an attribute on the containing node.
 
 ## Installation
@@ -16,10 +16,9 @@ bower install https://github.com/RutledgePaulV/jquery.handlebars.git
 ## Usage
 
 1. Make sure you've already loaded jQuery!
-2. Make sure that if you're not using pre-compiled templates that you include the full handlebars library.
-3. If you have pre-compiled templates, then just include the runtime!
+2. Include handlebars (runtime if using compiled templates, or full if not).
 
-Check my handlebars, yo:
+3. Define your handlebars templates:
 ```handlebars
 <!-- users.handlebars -->
 <div>
@@ -35,7 +34,7 @@ Check my handlebars, yo:
 </div>
 ```
 
-Get yourself some markup:
+4. Reference the uri for the handlebar templates as the data-template attribute:
 ```html
 
 <div data-template='static/templates/users.handlebars'></div>
@@ -47,7 +46,7 @@ Get yourself some markup:
 
 ```
 
-Now, inside your custom js for the page:
+5. Initialize the plugin and use your templated regions!
 ```JavaScript
 $(function(){
 
