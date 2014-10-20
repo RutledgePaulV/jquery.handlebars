@@ -1,0 +1,24 @@
+{
+  "name": "jquery.handlebars",
+  "main": "jquery.handlebars.js",
+  "version": "0.0.0",
+  "authors": [
+    "paul rutledge <paul.v.rutledge@gmail.com>"
+  ],
+  "description": "A jquery plugin for use with handlebars templates",
+  "keywords": [
+    "jquery",
+    "handlebars",
+    "templating",
+    "plugin"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/RutledgePaulV/jquery.handlebars",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
