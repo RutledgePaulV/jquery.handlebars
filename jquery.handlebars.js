@@ -66,11 +66,11 @@
             // requesting and compiling the template if the filename had a handlebars extension
             // otherwise request and execute as a script if js extension (precompiled)
             if (!Handlebars.templates.hasOwnProperty(handlebarsPrefix)) {
-                if(extension === 'handlebars'){
+                if(extension === '.handlebars'){
                     $.get(templateUri).done(function (contents) {
                         Handlebars.templates[handlebarsPrefix] = Handlebars.compile(contents);
                     });
-                } else if(extension === 'js'){
+                } else if(extension === '.js'){
                     $.getScript(templateUri);
                 }
             }
