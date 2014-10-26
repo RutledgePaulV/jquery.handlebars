@@ -16,15 +16,15 @@
 
     var TemplateElements = {};
 
-    function getFileNameWithExtension(path){
+    function getFileNameWithExtension(path) {
         return path.substr(path.lastIndexOf('/') + 1);
     }
 
-    function getFileExtension(nameOrPath){
+    function getFileExtension(nameOrPath) {
         return nameOrPath.substr(nameOrPath.lastIndexOf('.'));
     }
 
-    function getTemplateName(uri){
+    function getTemplateName(uri) {
         var name = getFileNameWithExtension(uri);
         var extension = getFileExtension(name);
         return name.replace(extension, '');
@@ -35,44 +35,51 @@
      * for any elements that are marked, and also associate the rendering with the element(s) to which
      * they were assigned.
      *
-     *
-     * @param {string} [uriPrefix] An optional path prefix to prepend to each
-     *                             encountered path in the data-template attribute.
+     * @param {function} [callback] A function to execute once all the scripts are loaded.
      */
-    $.handlebars = function (uriPrefix) {
-
-
-        // if no prefix was supplied, assume that the full path to the template was provided.
-        uriPrefix = uriPrefix || '';
+    $.handlebars = function (callback) {
 
         Handlebars.templates = Handlebars.templates || {};
 
-        $('[data-template]').each(function () {
+        var templated = $('[data-template]');
+        var needLoading = [];
 
-            // getting the path to the template to pull in with an optional global prefix
-            var templateUri = uriPrefix + $(this).data('template');
-
-            var extension = getFileExtension(templateUri);
+        templated.each(function () {
+            var templateUri = $(this).data('template');
             var handlebarsPrefix = getTemplateName(templateUri);
 
 
             // keeping track of the elements that have templates associated with them, and which template
             if (!TemplateElements.hasOwnProperty(handlebarsPrefix)) {
                 TemplateElements[handlebarsPrefix] = [this];
+
+                if (!Handlebars.templates.hasOwnProperty(handlebarsPrefix)) {
+                    needLoading.push(templateUri);
+                }
             } else {
                 TemplateElements[handlebarsPrefix].push(this);
             }
+        });
 
-            // requesting and compiling the template if the filename had a handlebars extension
-            // otherwise request and execute as a script if js extension (precompiled)
-            if (!Handlebars.templates.hasOwnProperty(handlebarsPrefix)) {
-                if(extension === '.handlebars'){
-                    $.get(templateUri).done(function (contents) {
-                        Handlebars.templates[handlebarsPrefix] = Handlebars.compile(contents);
-                    });
-                } else if(extension === '.js'){
-                    $.getScript(templateUri);
-                }
+        needLoading.forEach(function (templateUri) {
+            var extension = getFileExtension(templateUri);
+            if (extension === '.handlebars') {
+                $.get(templateUri).done(function (contents) {
+                    Handlebars.templates[getTemplateName(templateUri)] = Handlebars.compile(contents);
+                    var index = needLoading.indexOf(templateUri);
+                    needLoading.splice(index, 1);
+                    if(needLoading.length === 0){
+                        callback();
+                    }
+                });
+            } else if (extension === '.js') {
+                $.getScript(templateUri).done(function(){
+                    var index = needLoading.indexOf(templateUri);
+                    needLoading.splice(index, 1);
+                    if(needLoading.length === 0){
+                        callback();
+                    }
+                });
             }
         });
     };
@@ -87,9 +94,9 @@
      * @param {string} selector A css selector to identify the element of the available set. use ('*') for all.
      * @returns {null|string} Returns null if a selector was provided, else returns the rendered html.
      */
-    $.renderHandlebars = function(templateName, data, selector){
+    $.renderHandlebars = function (templateName, data, selector) {
         var rendered = Handlebars.templates[templateName](data);
-        if(!selector){
+        if (!selector) {
             return rendered;
         } else {
             $(TemplateElements[templateName]).filter(selector).each(function (index, element) {
