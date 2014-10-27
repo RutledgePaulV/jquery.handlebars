@@ -49,20 +49,22 @@ bower install https://github.com/RutledgePaulV/jquery.handlebars.git
     ```JavaScript
     $(function(){
     
-        // locates all nodes with data-template and makes 
-        // get requests to obtain their templates and compile if necessary
-        $.handlebars();
-        
-        // calling the template with context data automatically updates the div associated with it
-        Handlebars.users({firstName: 'Paul', age: 22});
-        
-        
-        Handlebars.weather({temperature: '20 degrees fahrenheit', status: 'sunny'});
-        
-        
-        // you can render shared templates individually by passing a css-selector as the second param
-        // if you don't specify, it will render all the areas that share that template.
-        Handlebars.weather({temperature: '20 degrees celsius', status: 'overcast'}, '#weather2');
+        // the callback will fire once all the required templates have been downloaded / compiled
+        // (will return immediately if you already included precompiled templates on the page)
+        $.handlebars(function(){
+
+            // calling the template with context data automatically updates the div associated with it
+            $.renderTemplate('users', {firstName: 'Paul', age: 22});
+
+            
+            $.renderTemplate('weather',{temperature: '20 degrees fahrenheit', status: 'sunny'});
+
+
+            // you can render shared templates individually by passing a css-selector as the third param
+            // if you don't specify, it will render all the areas that share that template.
+            $.renderTemplate('weather', {temperature: '20 degrees celsius', status: 'overcast'}, '#weather2');
+
+        });
         
         
     });
