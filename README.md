@@ -53,16 +53,14 @@ bower install https://github.com/RutledgePaulV/jquery.handlebars.git
         // (will return immediately if you already included precompiled templates on the page)
         $.handlebars(function(){
 
-            // calling the template with context data automatically updates the div associated with it
-            $.renderTemplate('users', {firstName: 'Paul', age: 22});
+            // calling the template with context data automatically updates the associated divs that match the selector
+            $.renderTemplate('users', {firstName: 'Paul', age: 22}, '*');
 
-            
-            $.renderTemplate('weather',{temperature: '20 degrees fahrenheit', status: 'sunny'});
+            // you choose which templated areas should be rendered by passing a css-selector as the third param
+            $.renderTemplate('weather', {temperature: '20 degrees fahrenheit', status: 'sunny'}, '#weather2');
 
-
-            // you can render shared templates individually by passing a css-selector as the third param
-            // if you don't specify, it will render all the areas that share that template.
-            $.renderTemplate('weather', {temperature: '20 degrees celsius', status: 'overcast'}, '#weather2');
+            // if you omit the parameter, it will just return the markup
+            var weatherMarkup = $.renderTemplate('weather', {temperature: '20 degrees celsius', status: 'overcast'});
 
         });
         
